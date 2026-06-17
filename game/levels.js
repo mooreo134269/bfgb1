@@ -1,5 +1,5 @@
 /**
- * Levels - 关卡数据系统
+ * Levels - 关卡数据系统（增强空间错觉）
  */
 
 const Levels = [
@@ -12,7 +12,6 @@ const Levels = [
         player: { x: 1, y: 3, z: 0 },
         goal: { x: 6, y: 3, z: 0 },
         tiles: [
-            // 基础路径
             { x: 0, y: 2, z: 0 }, { x: 0, y: 3, z: 0 }, { x: 0, y: 4, z: 0 },
             { x: 1, y: 2, z: 0 }, { x: 1, y: 3, z: 0 }, { x: 1, y: 4, z: 0 },
             { x: 2, y: 2, z: 0 }, { x: 2, y: 3, z: 0 }, { x: 2, y: 4, z: 0 },
@@ -24,8 +23,8 @@ const Levels = [
         ],
         mechanisms: [],
         decorations: [
-            { x: 0, y: 0, color: '#7eb8a2', size: 40, rotation: 0.2 },
-            { x: 7, y: 0, color: '#e6a4a4', size: 35, rotation: -0.3 }
+            { x: 0, y: 0, color: '#7eb8a2', size: 40, rotation: 0.2, layer: 0 },
+            { x: 7, y: 0, color: '#e6a4a4', size: 35, rotation: -0.3, layer: 0 }
         ]
     },
     
@@ -38,11 +37,9 @@ const Levels = [
         player: { x: 1, y: 5, z: 0 },
         goal: { x: 6, y: 1, z: 0 },
         tiles: [
-            // 左侧路径
             { x: 0, y: 4, z: 0 }, { x: 0, y: 5, z: 0 },
             { x: 1, y: 4, z: 0 }, { x: 1, y: 5, z: 0 },
             { x: 2, y: 4, z: 0 }, { x: 2, y: 5, z: 0 },
-            // 上方路径（需旋转开启）
             { x: 3, y: 3, z: 0 }, { x: 3, y: 4, z: 0 },
             { x: 4, y: 2, z: 0 }, { x: 4, y: 3, z: 0 },
             { x: 5, y: 1, z: 0 }, { x: 5, y: 2, z: 0 },
@@ -60,7 +57,7 @@ const Levels = [
             }
         ],
         decorations: [
-            { x: 7, y: 0, color: '#f0c987', size: 45, rotation: 0.1 }
+            { x: 7, y: 0, color: '#f0c987', size: 45, rotation: 0.1, layer: 0 }
         ]
     },
     
@@ -73,14 +70,11 @@ const Levels = [
         player: { x: 1, y: 3, z: 0 },
         goal: { x: 8, y: 3, z: 0 },
         tiles: [
-            // 左侧
             { x: 0, y: 2, z: 0 }, { x: 0, y: 3, z: 0 }, { x: 0, y: 4, z: 0 },
             { x: 1, y: 2, z: 0 }, { x: 1, y: 3, z: 0 }, { x: 1, y: 4, z: 0 },
             { x: 2, y: 2, z: 0 }, { x: 2, y: 3, z: 0 }, { x: 2, y: 4, z: 0 },
-            // 中间（断开）
             { x: 5, y: 2, z: 0 }, { x: 5, y: 3, z: 0 }, { x: 5, y: 4, z: 0 },
             { x: 6, y: 2, z: 0 }, { x: 6, y: 3, z: 0 }, { x: 6, y: 4, z: 0 },
-            // 右侧
             { x: 7, y: 2, z: 0 }, { x: 7, y: 3, z: 0 }, { x: 7, y: 4, z: 0 },
             { x: 8, y: 2, z: 0 }, { x: 8, y: 3, z: 0 }, { x: 8, y: 4, z: 0 },
             { x: 9, y: 2, z: 0 }, { x: 9, y: 3, z: 0 }, { x: 9, y: 4, z: 0 }
@@ -99,8 +93,8 @@ const Levels = [
             }
         ],
         decorations: [
-            { x: 0, y: 0, color: '#7eb8a2', size: 50, rotation: 0.15 },
-            { x: 9, y: 7, color: '#e6a4a4', size: 40, rotation: -0.2 }
+            { x: 0, y: 0, color: '#7eb8a2', size: 50, rotation: 0.15, layer: 0 },
+            { x: 9, y: 7, color: '#e6a4a4', size: 40, rotation: -0.2, layer: 0 }
         ]
     },
     
@@ -113,7 +107,6 @@ const Levels = [
         player: { x: 1, y: 3, z: 0 },
         goal: { x: 8, y: 3, z: 0 },
         tiles: [
-            // 完整路径
             { x: 0, y: 2, z: 0 }, { x: 0, y: 3, z: 0 }, { x: 0, y: 4, z: 0 },
             { x: 1, y: 2, z: 0 }, { x: 1, y: 3, z: 0 }, { x: 1, y: 4, z: 0 },
             { x: 2, y: 2, z: 0 }, { x: 2, y: 3, z: 0 }, { x: 2, y: 4, z: 0 },
@@ -139,7 +132,7 @@ const Levels = [
             }
         ],
         decorations: [
-            { x: 9, y: 0, color: '#f0c987', size: 45, rotation: 0.1 }
+            { x: 9, y: 0, color: '#f0c987', size: 45, rotation: 0.1, layer: 0 }
         ]
     },
     
@@ -152,14 +145,11 @@ const Levels = [
         player: { x: 1, y: 7, z: 0 },
         goal: { x: 8, y: 1, z: 0 },
         tiles: [
-            // 起点区域
             { x: 0, y: 6, z: 0 }, { x: 0, y: 7, z: 0 }, { x: 0, y: 8, z: 0 },
             { x: 1, y: 6, z: 0 }, { x: 1, y: 7, z: 0 }, { x: 1, y: 8, z: 0 },
             { x: 2, y: 6, z: 0 }, { x: 2, y: 7, z: 0 },
-            // 中间区域（通过旋转平台连接）
             { x: 4, y: 4, z: 0 }, { x: 4, y: 5, z: 0 },
             { x: 5, y: 3, z: 0 }, { x: 5, y: 4, z: 0 },
-            // 上方区域
             { x: 6, y: 2, z: 0 }, { x: 6, y: 3, z: 0 },
             { x: 7, y: 1, z: 0 }, { x: 7, y: 2, z: 0 },
             { x: 8, y: 1, z: 0 }, { x: 8, y: 2, z: 0 },
@@ -188,12 +178,12 @@ const Levels = [
             }
         ],
         decorations: [
-            { x: 0, y: 0, color: '#7eb8a2', size: 55, rotation: 0.2 },
-            { x: 9, y: 9, color: '#e6a4a4', size: 45, rotation: -0.15 }
+            { x: 0, y: 0, color: '#7eb8a2', size: 55, rotation: 0.2, layer: 0 },
+            { x: 9, y: 9, color: '#e6a4a4', size: 45, rotation: -0.15, layer: 1 }
         ]
     },
     
-    // ==================== 关卡 6: 综合解谜 ====================
+    // ==================== 关卡 6: 多层空间 ====================
     {
         id: 6,
         name: "归途",
@@ -202,24 +192,18 @@ const Levels = [
         player: { x: 1, y: 7, z: 0 },
         goal: { x: 10, y: 1, z: 0 },
         tiles: [
-            // 起点
             { x: 0, y: 6, z: 0 }, { x: 0, y: 7, z: 0 }, { x: 0, y: 8, z: 0 },
             { x: 1, y: 6, z: 0 }, { x: 1, y: 7, z: 0 }, { x: 1, y: 8, z: 0 },
             { x: 2, y: 6, z: 0 }, { x: 2, y: 7, z: 0 },
-            // 第一段路径
             { x: 3, y: 5, z: 0 }, { x: 3, y: 6, z: 0 },
-            // 断开的桥
             { x: 6, y: 4, z: 0 }, { x: 6, y: 5, z: 0 },
-            // 中间平台
             { x: 7, y: 3, z: 0 }, { x: 7, y: 4, z: 0 },
-            // 门后路径
             { x: 8, y: 2, z: 0 }, { x: 8, y: 3, z: 0 },
             { x: 9, y: 1, z: 0 }, { x: 9, y: 2, z: 0 },
             { x: 10, y: 1, z: 0 }, { x: 10, y: 2, z: 0 },
             { x: 11, y: 0, z: 0 }, { x: 11, y: 1, z: 0 }
         ],
         mechanisms: [
-            // 旋转平台1
             {
                 type: 'rotatable',
                 x: 4, y: 5, z: 0,
@@ -229,7 +213,6 @@ const Levels = [
                 ],
                 initialRotation: 0
             },
-            // 开关1 -> 桥
             {
                 type: 'switch',
                 x: 4, y: 6, z: 0,
@@ -241,7 +224,6 @@ const Levels = [
                 x1: 5, y1: 5, x2: 5, y2: 5, z: 0,
                 initiallyExtended: false
             },
-            // 旋转平台2
             {
                 type: 'rotatable',
                 x: 7, y: 4, z: 0,
@@ -251,7 +233,6 @@ const Levels = [
                 ],
                 initialRotation: 0
             },
-            // 开关2 -> 门
             {
                 type: 'switch',
                 x: 7, y: 3, z: 0,
@@ -265,9 +246,9 @@ const Levels = [
             }
         ],
         decorations: [
-            { x: 0, y: 0, color: '#7eb8a2', size: 50, rotation: 0.15 },
-            { x: 11, y: 9, color: '#f0c987', size: 45, rotation: -0.1 },
-            { x: 6, y: 0, color: '#e6a4a4', size: 35, rotation: 0.25 }
+            { x: 0, y: 0, color: '#7eb8a2', size: 50, rotation: 0.15, layer: 0 },
+            { x: 11, y: 9, color: '#f0c987', size: 45, rotation: -0.1, layer: 0 },
+            { x: 6, y: 0, color: '#e6a4a4', size: 35, rotation: 0.25, layer: 1 }
         ]
     }
 ];

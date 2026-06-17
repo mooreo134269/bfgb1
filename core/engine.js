@@ -1,5 +1,5 @@
 /**
- * Engine Core - 等轴视角坐标系统与核心游戏引擎
+ * Engine Core - 等轴视角坐标系统与核心游戏引擎（增强版空间错觉）
  */
 
 // 等轴视角配置
@@ -11,7 +11,7 @@ const ISO = {
     // 网格坐标转屏幕坐标
     gridToScreen(gx, gy, gz = 0) {
         const x = (gx - gy) * this.tileWidth / 2;
-        const y = (gx + gy) * this.tileHeight / 2 - gz * this.tileHeight;
+        const y = (gx + gy) * this.tileHeight / 2 - gz * this.tileHeight * 1.5;
         return { x, y };
     },
     
@@ -20,6 +20,25 @@ const ISO = {
         const gx = (sx / (this.tileWidth / 2) + sy / (this.tileHeight / 2)) / 2;
         const gy = (sy / (this.tileHeight / 2) - sx / (this.tileWidth / 2)) / 2;
         return { x: Math.floor(gx), y: Math.floor(gy) };
+    },
+    
+    // 3D空间转换（纪念碑谷2风格）
+    worldToScreen3D(x, y, z, layer = 0) {
+        // 基础等轴投影
+        const baseX = (x - y) * this.tileWidth / 2;
+        const baseY = (x + y) * this.tileHeight / 2 - z * this.tileHeight * 1.5;
+        
+        // 空间错觉偏移（根据层级产生视差）
+        const layerOffset = layer * 0.1;
+        const perspectiveX = baseX + (baseX - Engine.width / 2) * layerOffset;
+        const perspectiveY = baseY + layerOffset * 20;
+        
+        return { x: perspectiveX, y: perspectiveY };
+    },
+    
+    // 获取深度值（用于排序）
+    getDepth(gx, gy, gz = 0, layer = 0) {
+        return (gx + gy) * 0.5 + gz * 0.3 + layer * 0.1;
     }
 };
 
@@ -41,7 +60,10 @@ const Easing = {
         if (t < 2 / 2.75) return 7.5625 * (t -= 1.5 / 2.75) * t + 0.75;
         if (t < 2.5 / 2.75) return 7.5625 * (t -= 2.25 / 2.75) * t + 0.9375;
         return 7.5625 * (t -= 2.625 / 2.75) * t + 0.984375;
-    }
+    },
+    // 纪念碑谷风格专用缓动
+    monumentIn: t => 1 - Math.pow(1 - t, 3),
+    monumentOut: t => Math.pow(t, 3)
 };
 
 // 核心引擎
@@ -54,6 +76,7 @@ const Engine = {
     isRunning: false,
     lastTime: 0,
     deltaTime: 0,
+    time: 0,
     
     // 初始化
     init(canvasId) {
@@ -91,6 +114,7 @@ const Engine = {
         const currentTime = performance.now();
         this.deltaTime = (currentTime - this.lastTime) / 1000;
         this.lastTime = currentTime;
+        this.time += this.deltaTime;
         
         // 更新动画
         this.updateAnimations();

@@ -32,6 +32,7 @@ const Player = {
         this.targetZ = z;
         this.isMoving = false;
         this.path = [];
+        this.pathIndex = 0;
         this.updateScreenPos();
     },
     
@@ -124,9 +125,9 @@ const Player = {
     // 绘制
     draw(ctx) {
         // 阴影
-        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.fillStyle = 'rgba(0,0,0,0.08)';
         ctx.beginPath();
-        ctx.ellipse(this.screenX, this.screenY + 5, this.radius * 0.8, this.radius * 0.3, 0, 0, Math.PI * 2);
+        ctx.ellipse(this.screenX, this.screenY + 8, this.radius * 1.2, this.radius * 0.4, 0, 0, Math.PI * 2);
         ctx.fill();
         
         // 身体
@@ -137,22 +138,22 @@ const Player = {
         ctx.arc(this.screenX, bodyY, this.radius, 0, Math.PI * 2);
         ctx.fill();
         
-        // 帽子/头发
-        ctx.fillStyle = this.darkenColor(this.color, 30);
+        // 帽子/头发（纪念碑谷风格）
+        ctx.fillStyle = this.darkenColor(this.color, 35);
         ctx.beginPath();
-        ctx.arc(this.screenX, bodyY - this.radius * 0.3, this.radius * 0.6, Math.PI, 2 * Math.PI);
+        ctx.arc(this.screenX, bodyY - this.radius * 0.2, this.radius * 0.7, Math.PI * 0.8, Math.PI * 2.2);
         ctx.fill();
         
         // 眼睛
         ctx.fillStyle = '#fff';
-        const eyeOffset = this.radius * 0.25;
-        const eyeSize = this.radius * 0.18;
+        const eyeOffset = this.radius * 0.3;
+        const eyeSize = this.radius * 0.2;
         ctx.beginPath();
         ctx.arc(this.screenX - eyeOffset, bodyY - eyeOffset * 0.5, eyeSize, 0, Math.PI * 2);
         ctx.arc(this.screenX + eyeOffset, bodyY - eyeOffset * 0.5, eyeSize, 0, Math.PI * 2);
         ctx.fill();
         
-        // 眼睛瞳孔
+        // 瞳孔
         ctx.fillStyle = '#4a4863';
         ctx.beginPath();
         ctx.arc(this.screenX - eyeOffset, bodyY - eyeOffset * 0.5, eyeSize * 0.5, 0, Math.PI * 2);
