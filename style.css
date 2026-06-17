@@ -1,383 +1,382 @@
-/* ==================== 基础重置 ==================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: #f5f0e8;
-    color: #4a4863;
+:root {
+    --bg-color: #f5f5f5;
+    --board-bg: #e8e5e1;
+    --column-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent: #7eb8a2;
+    --accent-hover: #6aa892;
+    --card-bg: #ffffff;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
+    --radius: 8px;
 }
 
-/* ==================== 布局 ==================== */
-#app {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-#game-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-#ui-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: none;
-}
-
-#ui-container > * {
-    pointer-events: auto;
-}
-
-/* ==================== 关卡选择界面 ==================== */
-#level-select {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-primary);
     min-height: 100vh;
-    padding: 20px;
 }
 
-.title {
-    font-size: 3rem;
-    font-weight: 300;
-    letter-spacing: 0.3em;
-    color: #4a4863;
-    margin-bottom: 8px;
-    animation: fadeInDown 0.8s ease-out;
+.app {
+    max-width: 100%;
+    padding: 24px;
+    min-height: 100vh;
 }
 
-.subtitle {
-    font-size: 1rem;
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    color: #8a8698;
-    margin-bottom: 50px;
-    animation: fadeInDown 0.8s ease-out 0.1s both;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
 }
 
-.level-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 400px;
-    animation: fadeInUp 0.8s ease-out 0.2s both;
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.level-card {
-    width: 110px;
-    height: 110px;
-    background: #fff;
-    border-radius: 16px;
+.btn-add-column {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-add-column:hover {
+    background: var(--accent-hover);
+}
+
+.board {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 24px;
+    min-height: calc(100vh - 120px);
+}
+
+.column {
+    background: var(--column-bg);
+    border-radius: var(--radius);
+    min-width: 300px;
+    max-width: 300px;
+    padding: 16px;
+    box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 20px rgba(74, 72, 99, 0.08);
-    position: relative;
-    overflow: hidden;
+    transition: box-shadow 0.2s ease;
 }
 
-.level-card::before {
-    content: '';
-    position: absolute;
+.column:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.column-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.column-title:hover {
+    background: var(--bg-color);
+}
+
+.column-title:focus {
+    background: var(--bg-color);
+    outline: 2px solid var(--accent);
+}
+
+.column-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--bg-color);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.column-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: var(--bg-color);
+    color: var(--text-primary);
+}
+
+.cards {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    min-height: 100px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow);
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+.card:active {
+    cursor: grabbing;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    transform: rotate(3deg);
+}
+
+.card-title {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    resize: none;
+    font-family: inherit;
+}
+
+.card-title:focus {
+    background: var(--bg-color);
+    padding: 4px;
+    margin: -4px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+}
+
+.card-description {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    resize: none;
+    font-family: inherit;
+    min-height: 40px;
+}
+
+.card-description:focus {
+    background: var(--bg-color);
+    padding: 4px;
+    margin: -4px;
+    margin-top: 4px;
+    border-radius: 4px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--bg-color);
+}
+
+.card-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.card:hover .card-actions {
+    opacity: 1;
+}
+
+.btn-add-card {
+    background: transparent;
+    border: 2px dashed var(--board-bg);
+    border-radius: var(--radius);
+    padding: 12px;
+    width: 100%;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-card:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.column.drag-over {
+    background: #f0f7f4;
+    border: 2px dashed var(--accent);
+}
+
+.modal {
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #7eb8a2, #f0c987);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.level-card.unlocked:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(74, 72, 99, 0.15);
-}
-
-.level-card.unlocked:hover::before {
-    opacity: 1;
-}
-
-.level-card.locked {
-    background: #e8e0d5;
-    cursor: not-allowed;
-}
-
-.level-card.completed::after {
-    content: '★';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 0.9rem;
-    color: #f0c987;
-}
-
-.level-number {
-    font-size: 2rem;
-    font-weight: 300;
-    color: #4a4863;
-    margin-bottom: 4px;
-}
-
-.level-name {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: #8a8698;
-}
-
-.level-card.locked .level-number {
-    font-size: 1.5rem;
-    color: #a8a0b0;
-}
-
-.level-card.locked .level-name {
-    font-size: 0.75rem;
-}
-
-/* ==================== 游戏界面 ==================== */
-#game-ui {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.level-title {
-    position: absolute;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.2rem;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    color: #4a4863;
-    opacity: 0.8;
-    animation: fadeInDown 0.5s ease-out;
-}
-
-.game-hint {
-    position: absolute;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.9rem;
-    font-weight: 300;
-    color: #8a8698;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 12px 24px;
-    border-radius: 30px;
-    box-shadow: 0 4px 20px rgba(74, 72, 99, 0.1);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
-
-.game-hint.show {
-    opacity: 1;
-}
-
-.game-controls {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 16px;
-}
-
-.control-btn {
-    width: 50px;
-    height: 50px;
-    border: none;
-    border-radius: 50%;
-    background: #fff;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(74, 72, 99, 0.1);
-}
-
-.control-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(74, 72, 99, 0.15);
-}
-
-.control-btn:active {
-    transform: scale(0.95);
-}
-
-/* ==================== 胜利界面 ==================== */
-#win-ui {
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    background: rgba(245, 240, 232, 0.95);
-    animation: fadeIn 0.5s ease-out;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
 }
 
-.win-content {
-    text-align: center;
-    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+.modal.active {
+    opacity: 1;
+    visibility: visible;
 }
 
-.win-star {
-    font-size: 5rem;
-    color: #f0c987;
-    margin-bottom: 20px;
-    animation: pulse 1.5s ease-in-out infinite;
+.modal-content {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    min-width: 320px;
+    max-width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    transform: scale(0.9);
+    transition: transform 0.2s ease;
 }
 
-.win-title {
-    font-size: 2.5rem;
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    color: #4a4863;
-    margin-bottom: 8px;
+.modal.active .modal-content {
+    transform: scale(1);
 }
 
-.win-subtitle {
-    font-size: 1rem;
-    font-weight: 300;
-    color: #8a8698;
-    margin-bottom: 40px;
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
 }
 
-.win-buttons {
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 14px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.modal-input:focus {
+    border-color: var(--accent);
+}
+
+.modal-actions {
     display: flex;
-    gap: 16px;
-    justify-content: center;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
-.win-btn {
-    padding: 14px 36px;
-    border: none;
-    border-radius: 30px;
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.1em;
+.btn {
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    background: linear-gradient(135deg, #7eb8a2, #5a9a84);
-    color: #fff;
-    box-shadow: 0 4px 20px rgba(126, 184, 162, 0.3);
+    transition: all 0.2s ease;
 }
 
-.win-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(126, 184, 162, 0.4);
+.btn-secondary {
+    background: var(--bg-color);
+    border: none;
+    color: var(--text-primary);
 }
 
-.win-btn.secondary {
-    background: #fff;
-    color: #4a4863;
-    box-shadow: 0 4px 20px rgba(74, 72, 99, 0.1);
+.btn-secondary:hover {
+    background: #e0e0e0;
 }
 
-.win-btn.secondary:hover {
-    box-shadow: 0 8px 30px rgba(74, 72, 99, 0.15);
+.btn-primary {
+    background: var(--accent);
+    border: none;
+    color: white;
 }
 
-/* ==================== 动画 ==================== */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.btn-primary:hover {
+    background: var(--accent-hover);
 }
 
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
+.btn-danger {
+    background: #e74c3c;
+    border: none;
+    color: white;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.btn-danger:hover {
+    background: #c0392b;
 }
 
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-/* ==================== 响应式 ==================== */
-@media (max-width: 480px) {
-    .title {
-        font-size: 2rem;
-        letter-spacing: 0.2em;
+@media (max-width: 768px) {
+    .app {
+        padding: 16px;
     }
     
-    .subtitle {
-        font-size: 0.85rem;
-        margin-bottom: 30px;
+    .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
     }
     
-    .level-grid {
-        gap: 12px;
-    }
-    
-    .level-card {
-        width: 90px;
-        height: 90px;
-    }
-    
-    .level-number {
-        font-size: 1.6rem;
-    }
-    
-    .level-name {
-        font-size: 0.75rem;
-    }
-    
-    .win-star {
-        font-size: 4rem;
-    }
-    
-    .win-title {
-        font-size: 2rem;
+    .column {
+        min-width: 280px;
     }
 }

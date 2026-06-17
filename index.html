@@ -1,34 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>纪念碑谷 - 极简空间解谜</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Canvas 游戏渲染层 -->
-        <canvas id="game-canvas"></canvas>
+    <div class="app">
+        <header class="header">
+            <h1>Kanban Board</h1>
+            <button class="btn-add-column" id="addColumnBtn">+ Add Column</button>
+        </header>
         
-        <!-- UI 层 -->
-        <div id="ui-container"></div>
+        <main class="board" id="board">
+            <!-- Columns will be rendered here -->
+        </main>
     </div>
-    
-    <!-- 核心模块 -->
-    <script src="core/engine.js"></script>
-    <script src="core/camera.js"></script>
-    <script src="core/renderer.js"></script>
-    
-    <!-- 游戏模块 -->
-    <script src="game/levels.js"></script>
-    <script src="game/player.js"></script>
-    <script src="game/logic.js"></script>
-    
-    <!-- UI 模块 -->
-    <script src="ui/ui.js"></script>
-    
-    <!-- 主入口 -->
+
     <script src="main.js"></script>
 </body>
 </html>
