@@ -5,616 +5,295 @@
     box-sizing: border-box;
 }
 
-:root {
-    --color-bg: #f5f0e8;
-    --color-bg-dark: #e8e0d5;
-    --color-primary: #7eb8a2;
-    --color-primary-dark: #5a9a84;
-    --color-secondary: #e6a4a4;
-    --color-accent: #f0c987;
-    --color-text: #5d5a7d;
-    --color-text-light: #8a879f;
-    --color-white: #ffffff;
-    --shadow-soft: 0 10px 40px rgba(93, 90, 125, 0.1);
-    --shadow-medium: 0 20px 60px rgba(93, 90, 125, 0.15);
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body {
-    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    background: var(--color-bg);
-    min-height: 100vh;
-    overflow: hidden;
-    color: var(--color-text);
-}
-
-/* ==================== 游戏容器 ==================== */
-#game-container {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
-}
-
-.screen {
-    position: absolute;
+html, body {
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f5f0e8;
+    color: #4a4863;
+}
+
+/* ==================== 布局 ==================== */
+#app {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#ui-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#ui-container > * {
+    pointer-events: auto;
+}
+
+/* ==================== 关卡选择界面 ==================== */
+#level-select {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition-smooth);
+    min-height: 100vh;
+    padding: 20px;
 }
 
-.screen.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* ==================== 主菜单 ==================== */
-#menu-screen {
-    background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-dark) 100%);
-}
-
-.menu-content {
-    text-align: center;
-    z-index: 10;
-}
-
-.game-title {
-    font-size: 3.5rem;
+.title {
+    font-size: 3rem;
     font-weight: 300;
     letter-spacing: 0.3em;
-    color: var(--color-text);
-    margin-bottom: 0.5rem;
-    animation: fadeInUp 1s ease-out;
+    color: #4a4863;
+    margin-bottom: 8px;
+    animation: fadeInDown 0.8s ease-out;
 }
 
-.game-subtitle {
+.subtitle {
     font-size: 1rem;
-    letter-spacing: 0.2em;
-    color: var(--color-text-light);
-    margin-bottom: 3rem;
-    animation: fadeInUp 1s ease-out 0.2s both;
-}
-
-.menu-btn {
-    display: block;
-    width: 220px;
-    padding: 1rem 2rem;
-    margin: 0.8rem auto;
-    background: var(--color-white);
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    color: var(--color-text);
-    cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
-    animation: fadeInUp 1s ease-out both;
-}
-
-.menu-btn:nth-child(3) { animation-delay: 0.4s; }
-.menu-btn:nth-child(4) { animation-delay: 0.5s; }
-
-.menu-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
-    background: var(--color-primary);
-    color: var(--color-white);
-}
-
-.menu-btn.secondary {
-    background: transparent;
-    border: 2px solid var(--color-primary);
-    color: var(--color-primary);
-}
-
-.menu-btn.secondary:hover {
-    background: var(--color-primary);
-    color: var(--color-white);
-}
-
-/* 装饰性几何图形 */
-.decorative-shapes {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.shape {
-    position: absolute;
-    opacity: 0.6;
-}
-
-.shape-1 {
-    width: 200px;
-    height: 200px;
-    background: linear-gradient(45deg, var(--color-primary) 0%, transparent 70%);
-    border-radius: 10px;
-    top: 10%;
-    left: 10%;
-    transform: rotate(15deg);
-    animation: floatShape 6s ease-in-out infinite;
-}
-
-.shape-2 {
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(135deg, var(--color-secondary) 0%, transparent 70%);
-    border-radius: 50%;
-    bottom: 20%;
-    right: 15%;
-    animation: floatShape 8s ease-in-out infinite reverse;
-}
-
-.shape-3 {
-    width: 100px;
-    height: 200px;
-    background: linear-gradient(180deg, var(--color-accent) 0%, transparent 70%);
-    top: 30%;
-    right: 25%;
-    transform: skewX(-10deg);
-    animation: floatShape 7s ease-in-out infinite 1s;
-}
-
-/* ==================== 关卡选择 ==================== */
-#level-select {
-    background: var(--color-bg);
-    padding: 2rem;
-}
-
-.level-header {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-}
-
-.level-header h2 {
     font-weight: 300;
     letter-spacing: 0.2em;
-    color: var(--color-text);
-}
-
-.back-btn {
-    background: var(--color-white);
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    color: var(--color-text);
-    cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
-}
-
-.back-btn:hover {
-    transform: scale(1.1);
-    background: var(--color-primary);
-    color: var(--color-white);
+    color: #8a8698;
+    margin-bottom: 50px;
+    animation: fadeInDown 0.8s ease-out 0.1s both;
 }
 
 .level-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    max-width: 600px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 400px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
-.level-item {
-    width: 100px;
-    height: 100px;
-    background: var(--color-white);
-    border-radius: 20px;
+.level-card {
+    width: 110px;
+    height: 110px;
+    background: #fff;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 20px rgba(74, 72, 99, 0.08);
     position: relative;
     overflow: hidden;
 }
 
-.level-item:hover:not(.locked) {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: var(--shadow-medium);
-}
-
-.level-item.locked {
-    background: var(--color-bg-dark);
-    cursor: not-allowed;
-}
-
-.level-item.locked::after {
-    content: '🔒';
-    font-size: 1.5rem;
-}
-
-.level-item .level-num {
-    font-size: 1.8rem;
-    font-weight: 300;
-    color: var(--color-text);
-}
-
-.level-item .level-name {
-    font-size: 0.7rem;
-    color: var(--color-text-light);
-    margin-top: 0.3rem;
-    letter-spacing: 0.1em;
-}
-
-.level-item.completed {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-}
-
-.level-item.completed .level-num,
-.level-item.completed .level-name {
-    color: var(--color-white);
-}
-
-.level-item.current {
-    border: 3px solid var(--color-accent);
-}
-
-/* ==================== 游戏界面 ==================== */
-#game-screen {
-    background: var(--color-bg);
-}
-
-.game-header {
+.level-card::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 100;
+    height: 4px;
+    background: linear-gradient(90deg, #7eb8a2, #f0c987);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.level-title {
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    color: var(--color-text);
+.level-card.unlocked:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(74, 72, 99, 0.15);
 }
 
-.icon-btn {
-    background: var(--color-white);
-    border: none;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    color: var(--color-text);
-    cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
+.level-card.unlocked:hover::before {
+    opacity: 1;
 }
 
-.icon-btn:hover {
-    transform: scale(1.1);
-    background: var(--color-primary);
-    color: var(--color-white);
+.level-card.locked {
+    background: #e8e0d5;
+    cursor: not-allowed;
 }
 
-.game-canvas {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-/* ==================== 游戏元素基础样式 ==================== */
-/* 地面/平台 */
-.tile {
-    position: absolute;
-    background: var(--color-white);
-    border-radius: 4px;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
-}
-
-.tile.walkable {
-    cursor: pointer;
-}
-
-.tile.walkable:hover {
-    background: var(--color-primary);
-    transform: scale(1.02);
-}
-
-.tile.goal {
-    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent) 100%);
-}
-
-.tile.goal::after {
+.level-card.completed::after {
     content: '★';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--color-white);
-    font-size: 1.5rem;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-/* 角色 */
-.character {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--color-secondary) 0%, #d88a8a 100%);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    box-shadow: 0 5px 15px rgba(230, 164, 164, 0.4);
-    z-index: 50;
-    transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                top 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.character::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 8px;
-    height: 8px;
-    background: var(--color-white);
-    border-radius: 50%;
-}
-
-.character::after {
-    content: '';
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 8px;
-    height: 8px;
-    background: var(--color-white);
-    border-radius: 50%;
+    font-size: 0.9rem;
+    color: #f0c987;
 }
 
-/* 旋转平台 */
-.rotatable-platform {
-    position: absolute;
-    background: var(--color-primary);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-medium);
+.level-number {
+    font-size: 2rem;
+    font-weight: 300;
+    color: #4a4863;
+    margin-bottom: 4px;
 }
 
-.rotatable-platform:hover {
-    transform: scale(1.05);
+.level-name {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #8a8698;
 }
 
-.rotatable-platform .connector {
-    position: absolute;
-    background: var(--color-primary-dark);
-    border-radius: 4px;
+.level-card.locked .level-number {
+    font-size: 1.5rem;
+    color: #a8a0b0;
 }
 
-/* 桥梁 */
-.bridge {
-    position: absolute;
-    background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent) 100%);
-    border-radius: 4px;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(240, 201, 135, 0.3);
+.level-card.locked .level-name {
+    font-size: 0.75rem;
 }
 
-.bridge.extended {
-    opacity: 1;
-}
-
-.bridge.retracted {
-    opacity: 0.3;
-    transform: scaleX(0.3);
-}
-
-/* 开关 */
-.switch {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: var(--color-white);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
-}
-
-.switch.off {
-    background: var(--color-bg-dark);
-}
-
-.switch.on {
-    background: var(--color-primary);
-    transform: scale(1.1);
-}
-
-.switch::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--color-white);
-    transition: var(--transition-smooth);
-}
-
-.switch.on::after {
-    background: var(--color-white);
-}
-
-/* 门 */
-.door {
-    position: absolute;
-    background: linear-gradient(180deg, var(--color-text) 0%, #4a4863 100%);
-    border-radius: 4px;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-medium);
-}
-
-.door.closed {
-    height: 80px;
-    opacity: 1;
-}
-
-.door.open {
-    height: 10px;
-    opacity: 0.3;
-}
-
-/* 视觉错位元素 */
-.visual-shift {
-    position: absolute;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ==================== 提示界面 ==================== */
-.hint-overlay {
-    position: absolute;
+/* ==================== 游戏界面 ==================== */
+#game-ui {
+    position: relative;
     width: 100%;
     height: 100%;
-    background: rgba(245, 240, 232, 0.95);
+}
+
+.level-title {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: #4a4863;
+    opacity: 0.8;
+    animation: fadeInDown 0.5s ease-out;
+}
+
+.game-hint {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #8a8698;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 12px 24px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(74, 72, 99, 0.1);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.game-hint.show {
+    opacity: 1;
+}
+
+.game-controls {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+}
+
+.control-btn {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 72, 99, 0.1);
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(74, 72, 99, 0.15);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+/* ==================== 胜利界面 ==================== */
+#win-ui {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 200;
-    animation: fadeIn 0.3s ease-out;
-}
-
-.hint-overlay.hidden {
-    display: none;
-}
-
-.hint-content {
-    text-align: center;
-    padding: 3rem;
-    background: var(--color-white);
-    border-radius: 30px;
-    box-shadow: var(--shadow-medium);
-    max-width: 400px;
-}
-
-.hint-content p {
-    font-size: 1.2rem;
-    line-height: 1.8;
-    color: var(--color-text);
-    margin-bottom: 2rem;
-}
-
-#btn-close-hint {
-    padding: 0.8rem 2.5rem;
-    background: var(--color-primary);
-    border: none;
-    border-radius: 30px;
-    color: var(--color-white);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-#btn-close-hint:hover {
-    background: var(--color-primary-dark);
-    transform: scale(1.05);
-}
-
-/* ==================== 通关界面 ==================== */
-#win-screen {
-    background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary) 100%);
+    min-height: 100vh;
+    background: rgba(245, 240, 232, 0.95);
+    animation: fadeIn 0.5s ease-out;
 }
 
 .win-content {
     text-align: center;
-    z-index: 10;
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.win-star {
+    font-size: 5rem;
+    color: #f0c987;
+    margin-bottom: 20px;
+    animation: pulse 1.5s ease-in-out infinite;
 }
 
 .win-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 300;
     letter-spacing: 0.2em;
-    color: var(--color-white);
-    margin-bottom: 0.5rem;
-    animation: fadeInUp 0.8s ease-out;
+    color: #4a4863;
+    margin-bottom: 8px;
 }
 
 .win-subtitle {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 3rem;
-    animation: fadeInUp 0.8s ease-out 0.2s both;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #8a8698;
+    margin-bottom: 40px;
 }
 
-.win-particles {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.win-particles::before,
-.win-particles::after {
-    content: '✦';
-    position: absolute;
-    font-size: 2rem;
-    color: rgba(255, 255, 255, 0.6);
-    animation: particleFloat 3s ease-in-out infinite;
-}
-
-.win-particles::before {
-    top: 20%;
-    left: 20%;
-    animation-delay: 0s;
-}
-
-.win-particles::after {
-    top: 30%;
-    right: 25%;
-    animation-delay: 1s;
-}
-
-/* ==================== 声音开关 ==================== */
-.sound-toggle {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    background: var(--color-white);
-    border-radius: 50%;
+.win-buttons {
     display: flex;
-    align-items: center;
+    gap: 16px;
     justify-content: center;
+}
+
+.win-btn {
+    padding: 14px 36px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
     cursor: pointer;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
-    z-index: 1000;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #7eb8a2, #5a9a84);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(126, 184, 162, 0.3);
 }
 
-.sound-toggle:hover {
-    transform: scale(1.1);
+.win-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(126, 184, 162, 0.4);
 }
 
-#sound-icon {
-    font-size: 1.3rem;
-    color: var(--color-text);
+.win-btn.secondary {
+    background: #fff;
+    color: #4a4863;
+    box-shadow: 0 4px 20px rgba(74, 72, 99, 0.1);
+}
+
+.win-btn.secondary:hover {
+    box-shadow: 0 8px 30px rgba(74, 72, 99, 0.15);
 }
 
 /* ==================== 动画 ==================== */
@@ -623,10 +302,21 @@ body {
     to { opacity: 1; }
 }
 
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -634,96 +324,60 @@ body {
     }
 }
 
-@keyframes floatShape {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(5deg); }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
-}
-
-@keyframes particleFloat {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.6;
-    }
-    50% {
-        transform: translateY(-30px) rotate(180deg);
-        opacity: 1;
-    }
-}
-
-@keyframes slideIn {
+@keyframes scaleIn {
     from {
         opacity: 0;
-        transform: translateX(50px);
+        transform: scale(0.8);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: scale(1);
     }
 }
 
-@keyframes characterBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
 }
 
 /* ==================== 响应式 ==================== */
-@media (max-width: 768px) {
-    .game-title {
-        font-size: 2.5rem;
+@media (max-width: 480px) {
+    .title {
+        font-size: 2rem;
         letter-spacing: 0.2em;
     }
-
+    
+    .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 30px;
+    }
+    
     .level-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
+        gap: 12px;
     }
-
-    .level-item {
-        width: 80px;
-        height: 80px;
+    
+    .level-card {
+        width: 90px;
+        height: 90px;
     }
-
-    .game-header {
-        padding: 1rem;
+    
+    .level-number {
+        font-size: 1.6rem;
     }
-
-    .menu-btn {
-        width: 180px;
-        padding: 0.8rem 1.5rem;
+    
+    .level-name {
+        font-size: 0.75rem;
     }
-}
-
-@media (max-width: 480px) {
-    .game-title {
-        font-size: 1.8rem;
+    
+    .win-star {
+        font-size: 4rem;
     }
-
-    .level-grid {
-        grid-template-columns: repeat(2, 1fr);
+    
+    .win-title {
+        font-size: 2rem;
     }
-}
-
-/* ==================== 3D 伪效果 ==================== */
-.perspective-container {
-    perspective: 1000px;
-}
-
-.transform-3d {
-    transform-style: preserve-3d;
-    transform: rotateX(5deg) rotateY(-5deg);
-}
-
-/* 景深模糊效果 */
-.blur-bg {
-    filter: blur(2px);
-    transition: filter 0.5s ease;
-}
-
-.focus-main {
-    filter: blur(0);
 }
