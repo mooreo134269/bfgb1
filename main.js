@@ -1,282 +1,479 @@
 /**
- * Kanban Board - Pure Frontend Task Management
+ * PixelForge Studios - Main JavaScript
+ * Interactive functionality for game studio website
  */
 
-// State
-let columns = [];
-let draggedCard = null;
-let draggedColumn = null;
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all modules
+    initNavigation();
+    initScrollEffects();
+    initParticles();
+    initGameFilters();
+    initContactForm();
+    initSmoothScroll();
+});
 
-// Default columns
-const defaultColumns = [
-    { id: 1, title: 'To Do', cards: [
-        { id: 1, title: 'Welcome to Kanban', description: 'Drag cards between columns to organize your tasks' }
-    ]},
-    { id: 2, title: 'In Progress', cards: [] },
-    { id: 3, title: 'Done', cards: [] }
-];
+/**
+ * Navigation
+ */
+function initNavigation() {
+    const navbar = document.getElementById('navbar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
 
-// Load from localStorage or use defaults
-function loadBoard() {
-    const saved = localStorage.getItem('kanban-board');
-    if (saved) {
-        try {
-            columns = JSON.parse(saved);
-        } catch (e) {
-            columns = defaultColumns;
-        }
-    } else {
-        columns = defaultColumns;
-    }
-    render();
-}
-
-// Save to localStorage
-function saveBoard() {
-    localStorage.setItem('kanban-board', JSON.stringify(columns));
-}
-
-// Generate unique ID
-function generateId() {
-    return Date.now() + Math.random().toString(36).substr(2, 9);
-}
-
-// Render the board
-function render() {
-    const board = document.getElementById('board');
-    board.innerHTML = columns.map(column => `
-        <div class="column" data-id="${column.id}" draggable="true">
-            <div class="column-header">
-                <div style="display: flex; align-items: center; flex: 1;">
-                    <input type="text" class="column-title" value="${escapeHtml(column.title)}" 
-                           onchange="updateColumnTitle(${column.id}, this.value)">
-                    <span class="column-count">${column.cards.length}</span>
-                </div>
-                <div class="column-actions">
-                    <button class="btn-icon" onclick="deleteColumn(${column.id})" title="Delete Column">×</button>
-                </div>
-            </div>
-            <div class="cards" data-column-id="${column.id}">
-                ${column.cards.map(card => `
-                    <div class="card" draggable="true" data-id="${card.id}" data-column-id="${column.id}">
-                        <textarea class="card-title" rows="1" 
-                                  onchange="updateCard(${column.id}, ${card.id}, 'title', this.value)"
-                                  oninput="autoResize(this)">${escapeHtml(card.title)}</textarea>
-                        <textarea class="card-description" rows="2" placeholder="Add description..."
-                                  onchange="updateCard(${column.id}, ${card.id}, 'description', this.value)"
-                                  oninput="autoResize(this)">${escapeHtml(card.description || '')}</textarea>
-                        <div class="card-footer">
-                            <span style="font-size: 11px; color: var(--text-secondary);">#${card.id.toString().slice(-4)}</span>
-                            <div class="card-actions">
-                                <button class="btn-icon" onclick="deleteCard(${column.id}, ${card.id})" title="Delete">×</button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-            <button class="btn-add-card" onclick="addCard(${column.id})">+ Add Card</button>
-        </div>
-    `).join('');
-
-    // Re-attach drag events
-    attachDragEvents();
-}
-
-// Escape HTML
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// Auto-resize textarea
-function autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
-}
-
-// Add column
-function addColumnModal() {
-    const title = prompt('Enter column title:');
-    if (title && title.trim()) {
-        columns.push({
-            id: generateId(),
-            title: title.trim(),
-            cards: []
+    // Mobile menu toggle
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            navLinks.classList.toggle('active');
         });
-        saveBoard();
-        render();
     }
-}
 
-// Update column title
-function updateColumnTitle(columnId, title) {
-    const column = columns.find(c => c.id === columnId);
-    if (column && title.trim()) {
-        column.title = title.trim();
-        saveBoard();
+    // Close mobile menu on link click
+    if (navLinks) {
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
     }
-}
 
-// Delete column
-function deleteColumn(columnId) {
-    if (confirm('Delete this column and all its cards?')) {
-        columns = columns.filter(c => c.id !== columnId);
-        saveBoard();
-        render();
-    }
-}
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
 
-// Add card
-function addCard(columnId) {
-    const column = columns.find(c => c.id === columnId);
-    if (column) {
-        const newCard = {
-            id: generateId(),
-            title: 'New Card',
-            description: ''
-        };
-        column.cards.push(newCard);
-        saveBoard();
-        render();
+    // Active link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', function() {
+        let current = '';
         
-        // Focus the new card title
-        setTimeout(() => {
-            const card = document.querySelector(`[data-id="${newCard.id}"] .card-title`);
-            if (card) {
-                card.focus();
-                card.select();
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            
+            if (scrollY >= sectionTop - 200) {
+                current = section.getAttribute('id');
             }
-        }, 50);
-    }
-}
+        });
 
-// Update card
-function updateCard(columnId, cardId, field, value) {
-    const column = columns.find(c => c.id === columnId);
-    if (column) {
-        const card = column.cards.find(c => c.id === cardId);
-        if (card) {
-            card[field] = value;
-            saveBoard();
-        }
-    }
-}
-
-// Delete card
-function deleteCard(columnId, cardId) {
-    const column = columns.find(c => c.id === columnId);
-    if (column) {
-        column.cards = column.cards.filter(c => c.id !== cardId);
-        saveBoard();
-        render();
-    }
-}
-
-// Drag and Drop - Card
-function attachDragEvents() {
-    // Card drag events
-    document.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('dragstart', handleCardDragStart);
-        card.addEventListener('dragend', handleCardDragEnd);
-    });
-
-    // Column drag events
-    document.querySelectorAll('.column').forEach(column => {
-        column.addEventListener('dragstart', handleColumnDragStart);
-        column.addEventListener('dragend', handleColumnDragEnd);
-        column.addEventListener('dragover', handleColumnDragOver);
-        column.addEventListener('dragleave', handleColumnDragLeave);
-        column.addEventListener('drop', handleColumnDrop);
-    });
-
-    // Cards container drag events
-    document.querySelectorAll('.cards').forEach(cards => {
-        cards.addEventListener('dragover', handleCardsDragOver);
-        cards.addEventListener('drop', handleCardsDrop);
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === '#' + current) {
+                item.classList.add('active');
+            }
+        });
     });
 }
 
-function handleCardDragStart(e) {
-    draggedCard = {
-        cardId: parseInt(e.target.dataset.id),
-        columnId: parseInt(e.target.dataset.columnId)
+/**
+ * Scroll Effects & Animations
+ */
+function initScrollEffects() {
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
     };
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fadeInUp');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements
+    document.querySelectorAll('.team-member, .game-card, .news-card, .feature, .info-card, .milestone').forEach(el => {
+        el.style.opacity = '0';
+        observer.observe(el);
+    });
 }
 
-function handleCardDragEnd(e) {
-    e.target.classList.remove('dragging');
-    document.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
-    draggedCard = null;
-}
+/**
+ * Particle Background Effect
+ */
+function initParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
 
-function handleColumnDragStart(e) {
-    if (e.target.classList.contains('column')) {
-        draggedColumn = parseInt(e.target.dataset.id);
-        e.dataTransfer.effectAllowed = 'move';
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+        createParticle(container);
     }
 }
 
-function handleColumnDragEnd(e) {
-    draggedColumn = null;
+function createParticle(container) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    const size = Math.random() * 3 + 1;
+    const duration = Math.random() * 20 + 10;
+    const delay = Math.random() * 20;
+    
+    particle.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        background: rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2});
+        border-radius: 50%;
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        animation: particleFloat ${duration}s linear ${delay}s infinite;
+        pointer-events: none;
+    `;
+    
+    container.appendChild(particle);
 }
 
-function handleColumnDragOver(e) {
-    if (draggedColumn && !e.target.closest('.column').dataset.id == draggedColumn) {
+/**
+ * Game Filters
+ */
+function initGameFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const gameCards = document.querySelectorAll('.game-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active state
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.dataset.filter;
+
+            // Filter games
+            gameCards.forEach(card => {
+                if (filter === 'all' || card.dataset.category === filter) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.5s ease forwards';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+/**
+ * Contact Form
+ */
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
-        e.currentTarget.classList.add('drag-over');
+
+        // Get form data
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        // Validate
+        if (!data.name || !data.email || !data.subject || !data.message) {
+            showNotification('Please fill in all fields', 'error');
+            return;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            showNotification('Please enter a valid email address', 'error');
+            return;
+        }
+
+        // Simulate form submission
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span>Sending...</span>';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+            // Show success
+            form.innerHTML = `
+                <div class="form-success">
+                    <div class="form-success-icon">✓</div>
+                    <h3>Message Sent!</h3>
+                    <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+                </div>
+            `;
+            showNotification('Message sent successfully!', 'success');
+        }, 1500);
+    });
+}
+
+/**
+ * Smooth Scroll
+ */
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+/**
+ * Notification System
+ */
+function showNotification(message, type = 'info') {
+    // Remove existing notification
+    const existing = document.querySelector('.notification');
+    if (existing) existing.remove();
+
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    `;
+
+    // Styles
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        padding: 16px 24px;
+        background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#667eea'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+
+    const closeBtn = notification.querySelector('button');
+    closeBtn.style.cssText = `
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 4000);
+}
+
+// Add animation keyframes
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
-}
-
-function handleColumnDragLeave(e) {
-    e.currentTarget.classList.remove('drag-over');
-}
-
-function handleColumnDrop(e) {
-    e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
-    
-    if (draggedColumn && draggedCard) {
-        const targetColumnId = parseInt(e.currentTarget.dataset.id);
-        moveCard(draggedCard.columnId, draggedCard.cardId, targetColumnId);
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
     }
-}
+`;
+document.head.appendChild(style);
 
-function handleCardsDragOver(e) {
-    if (draggedCard) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-    }
-}
-
-function handleCardsDrop(e) {
-    e.preventDefault();
-    
-    if (draggedCard) {
-        const targetColumnId = parseInt(e.currentTarget.dataset.columnId);
-        moveCard(draggedCard.columnId, draggedCard.cardId, targetColumnId);
-    }
-}
-
-function moveCard(fromColumnId, cardId, toColumnId) {
-    const fromColumn = columns.find(c => c.id === fromColumnId);
-    const toColumn = columns.find(c => c.id === toColumnId);
-    
-    if (fromColumn && toColumn) {
-        const cardIndex = fromColumn.cards.findIndex(c => c.id === cardId);
-        if (cardIndex !== -1) {
-            const [card] = fromColumn.cards.splice(cardIndex, 1);
-            toColumn.cards.push(card);
-            saveBoard();
-            render();
+/**
+ * Wishlist Button Toggle
+ */
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn-wishlist')) {
+        e.target.classList.toggle('active');
+        if (e.target.classList.contains('active')) {
+            e.target.textContent = '♥';
+            e.target.style.color = '#e74c3c';
+            showNotification('Added to wishlist!', 'success');
+        } else {
+            e.target.textContent = '♡';
+            e.target.style.color = '';
         }
     }
+});
+
+/**
+ * Game Card Hover Effect with Parallax
+ */
+document.querySelectorAll('.game-card').forEach(card => {
+    card.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+    });
+
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+    });
+});
+
+/**
+ * Team Member Social Links Animation
+ */
+document.querySelectorAll('.team-member').forEach(member => {
+    member.addEventListener('mouseenter', function() {
+        const social = this.querySelector('.member-social');
+        if (social) {
+            social.style.opacity = '1';
+            social.style.transform = 'translateY(0)';
+        }
+    });
+
+    member.addEventListener('mouseleave', function() {
+        const social = this.querySelector('.member-social');
+        if (social) {
+            social.style.opacity = '0';
+            social.style.transform = 'translateY(10px)';
+        }
+    });
+});
+
+/**
+ * Stats Counter Animation
+ */
+function animateCounters() {
+    const counters = document.querySelectorAll('.stat-number');
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+        const suffix = counter.textContent.replace(/[0-9]/g, '');
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.floor(current).toLocaleString() + suffix;
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target.toLocaleString() + suffix;
+            }
+        };
+        
+        // Start animation when in view
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                updateCounter();
+                observer.disconnect();
+            }
+        }, { threshold: 0.5 });
+        
+        observer.observe(counter);
+    });
 }
 
-// Event Listeners
-document.getElementById('addColumnBtn').addEventListener('click', addColumnModal);
+// Initialize counter animation when DOM is ready
+animateCounters();
 
-// Initialize
-loadBoard();
+/**
+ * Lazy Load Images
+ */
+if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+    });
+}
+
+/**
+ * Back to Top Button
+ */
+const backToTopBtn = document.createElement('button');
+backToTopBtn.innerHTML = '↑';
+backToTopBtn.className = 'back-to-top';
+backToTopBtn.style.cssText = `
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 48px;
+    height: 48px;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+`;
+
+document.body.appendChild(backToTopBtn);
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 500) {
+        backToTopBtn.style.opacity = '1';
+        backToTopBtn.style.visibility = 'visible';
+    } else {
+        backToTopBtn.style.opacity = '0';
+        backToTopBtn.style.visibility = 'hidden';
+    }
+});
+
+backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/**
+ * Preloader
+ */
+window.addEventListener('load', function() {
+    document.body.classList.add('loaded');
+});
