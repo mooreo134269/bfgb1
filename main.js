@@ -1,247 +1,339 @@
 /**
- * PixelForge Studios - Main JavaScript
- * Interactive functionality for game studio website
+ * ToolHunt - Online Tools Directory
+ * JavaScript functionality
  */
 
+// Tools Data - 15 Tools
+const tools = [
+    // Design Tools
+    {
+        id: 1,
+        name: "Figma",
+        description: "Collaborative interface design tool for teams. Create, prototype, and gather feedback all in one place.",
+        category: "design",
+        icon: "🎨",
+        price: "Free",
+        url: "https://figma.com"
+    },
+    {
+        id: 2,
+        name: "Canva",
+        description: "Design anything and publish anywhere. Beautiful graphics, presentations, social media content and more.",
+        category: "design",
+        icon: "✏️",
+        price: "Freemium",
+        url: "https://canva.com"
+    },
+    {
+        id: 3,
+        name: "Coolors",
+        description: "Create perfect color palettes in seconds. The fastest way to find inspiration and generate harmonious schemes.",
+        category: "design",
+        icon: "🌈",
+        price: "Free",
+        url: "https://coolors.co"
+    },
+    {
+        id: 4,
+        name: "Unsplash",
+        description: "Beautiful, free photos gifted by the world's most generous community of photographers.",
+        category: "design",
+        icon: "📷",
+        price: "Free",
+        url: "https://unsplash.com"
+    },
+
+    // Development Tools
+    {
+        id: 5,
+        name: "VS Code",
+        description: "Code editing redefined and optimized for building and debugging modern web and cloud applications.",
+        category: "development",
+        icon: "💻",
+        price: "Free",
+        url: "https://code.visualstudio.com"
+    },
+    {
+        id: 6,
+        name: "GitHub",
+        description: "Where the world builds software. Millions of developers build and share code with GitHub.",
+        category: "development",
+        icon: "🐙",
+        price: "Freemium",
+        url: "https://github.com"
+    },
+    {
+        id: 7,
+        name: "CodePen",
+        description: "Build, test, and discover front-end code. A playground for the web community.",
+        category: "development",
+        icon: "📝",
+        price: "Free",
+        url: "https://codepen.io"
+    },
+    {
+        id: 8,
+        name: "Stack Overflow",
+        description: "The world's largest online community for developers to learn, share knowledge, and build their careers.",
+        category: "development",
+        icon: "💬",
+        price: "Free",
+        url: "https://stackoverflow.com"
+    },
+
+    // Productivity Tools
+    {
+        id: 9,
+        name: "Notion",
+        description: "All-in-one workspace for notes, docs, wikis, projects and collaboration. Write, plan, share.",
+        category: "productivity",
+        icon: "📓",
+        price: "Freemium",
+        url: "https://notion.so"
+    },
+    {
+        id: 10,
+        name: "Trello",
+        description: "Visualize your projects with boards, lists, and cards. Organize everything from日常 tasks to大型项目.",
+        category: "productivity",
+        icon: "📋",
+        price: "Freemium",
+        url: "https://trello.com"
+    },
+    {
+        id: 11,
+        name: "Todoist",
+        description: "The to-do list to organize work and life. Trusted by 30 million people worldwide.",
+        category: "productivity",
+        icon: "✅",
+        price: "Freemium",
+        url: "https://todoist.com"
+    },
+    {
+        id: 12,
+        name: "Miro",
+        description: "The visual collaboration platform for teams. Brainstorm, plan, and run meetings in one place.",
+        category: "productivity",
+        icon: "🗺️",
+        price: "Freemium",
+        url: "https://miro.com"
+    },
+
+    // Utility Tools
+    {
+        id: 13,
+        name: "Google Translate",
+        description: "Translate text, documents, and websites between 100+ languages. Break language barriers instantly.",
+        category: "utility",
+        icon: "🌍",
+        price: "Free",
+        url: "https://translate.google.com"
+    },
+    {
+        id: 14,
+        name: "Grammarly",
+        description: "Write clearly and confidently. AI-powered writing assistant that checks grammar, spelling, and more.",
+        category: "utility",
+        icon: "✍️",
+        price: "Freemium",
+        url: "https://grammarly.com"
+    },
+
+    // Media Tools
+    {
+        id: 15,
+        name: "YouTube",
+        description: "The world's largest video platform. Watch, upload and share videos with the global community.",
+        category: "media",
+        icon: "🎬",
+        price: "Free",
+        url: "https://youtube.com"
+    },
+    {
+        id: 16,
+        name: "Vimeo",
+        description: "Professional video platform for creators. High-quality video hosting, streaming, and analytics.",
+        category: "media",
+        icon: "🎥",
+        price: "Freemium",
+        url: "https://vimeo.com"
+    }
+];
+
+// State
+let currentCategory = 'all';
+let searchTerm = '';
+
+// Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all modules
-    initNavigation();
-    initScrollEffects();
-    initParticles();
-    initGameFilters();
-    initContactForm();
-    initSmoothScroll();
+    renderTools();
+    initSearch();
+    initCategoryTabs();
+    initNewsletter();
+    initFooterLinks();
 });
 
-/**
- * Navigation
- */
-function initNavigation() {
-    const navbar = document.getElementById('navbar');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navLinks = document.getElementById('navLinks');
-
-    // Mobile menu toggle
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
+// Render Tools
+function renderTools() {
+    const grid = document.getElementById('toolsGrid');
+    const noResults = document.getElementById('noResults');
+    
+    // Filter tools
+    let filteredTools = tools;
+    
+    if (currentCategory !== 'all') {
+        filteredTools = filteredTools.filter(tool => tool.category === currentCategory);
     }
-
-    // Close mobile menu on link click
-    if (navLinks) {
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
+    
+    if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        filteredTools = filteredTools.filter(tool => 
+            tool.name.toLowerCase().includes(term) ||
+            tool.description.toLowerCase().includes(term)
+        );
     }
+    
+    // Show/hide no results
+    if (filteredTools.length === 0) {
+        grid.style.display = 'none';
+        noResults.style.display = 'block';
+    } else {
+        grid.style.display = 'grid';
+        noResults.style.display = 'none';
+    }
+    
+    // Render cards
+    grid.innerHTML = filteredTools.map(tool => `
+        <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="tool-card" data-category="${tool.category}">
+            <div class="tool-icon">${tool.icon}</div>
+            <h3 class="tool-name">${tool.name}</h3>
+            <p class="tool-description">${tool.description}</p>
+            <div class="tool-meta">
+                <span class="tool-category">
+                    <span>${getCategoryIcon(tool.category)}</span>
+                    ${capitalizeFirst(tool.category)}
+                </span>
+                <span class="tool-price ${tool.price.includes('Free') ? '' : 'paid'}">${tool.price}</span>
+            </div>
+        </a>
+    `).join('');
+}
 
-    // Navbar scroll effect
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+// Helper Functions
+function getCategoryIcon(category) {
+    const icons = {
+        design: '🎨',
+        development: '💻',
+        productivity: '⚡',
+        utility: '🔧',
+        media: '📷'
+    };
+    return icons[category] || '🔧';
+}
+
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Search
+function initSearch() {
+    const searchInput = document.getElementById('searchInput');
+    
+    searchInput.addEventListener('input', function(e) {
+        searchTerm = e.target.value.trim();
+        renderTools();
+    });
+    
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.value = '';
+            searchTerm = '';
+            renderTools();
         }
     });
-
-    // Active link on scroll
-    const sections = document.querySelectorAll('section[id]');
-    const navItems = document.querySelectorAll('.nav-links a');
-
-    window.addEventListener('scroll', function() {
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            
-            if (scrollY >= sectionTop - 200) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navItems.forEach(item => {
-            item.classList.remove('active');
-            if (item.getAttribute('href') === '#' + current) {
-                item.classList.add('active');
-            }
-        });
-    });
 }
 
-/**
- * Scroll Effects & Animations
- */
-function initScrollEffects() {
-    // Intersection Observer for fade-in animations
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fadeInUp');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    // Observe elements
-    document.querySelectorAll('.team-member, .game-card, .news-card, .feature, .info-card, .milestone').forEach(el => {
-        el.style.opacity = '0';
-        observer.observe(el);
-    });
-}
-
-/**
- * Particle Background Effect
- */
-function initParticles() {
-    const container = document.getElementById('particles');
-    if (!container) return;
-
-    const particleCount = 50;
+// Category Tabs
+function initCategoryTabs() {
+    const tabs = document.querySelectorAll('.category-tab');
     
-    for (let i = 0; i < particleCount; i++) {
-        createParticle(container);
-    }
-}
-
-function createParticle(container) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    
-    const size = Math.random() * 3 + 1;
-    const duration = Math.random() * 20 + 10;
-    const delay = Math.random() * 20;
-    
-    particle.style.cssText = `
-        position: absolute;
-        width: ${size}px;
-        height: ${size}px;
-        background: rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2});
-        border-radius: 50%;
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        animation: particleFloat ${duration}s linear ${delay}s infinite;
-        pointer-events: none;
-    `;
-    
-    container.appendChild(particle);
-}
-
-/**
- * Game Filters
- */
-function initGameFilters() {
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const gameCards = document.querySelectorAll('.game-card');
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
             // Update active state
-            filterBtns.forEach(b => b.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
-
-            const filter = this.dataset.filter;
-
-            // Filter games
-            gameCards.forEach(card => {
-                if (filter === 'all' || card.dataset.category === filter) {
-                    card.style.display = 'block';
-                    card.style.animation = 'fadeInUp 0.5s ease forwards';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            
+            // Filter tools
+            currentCategory = this.dataset.category;
+            renderTools();
         });
     });
 }
 
-/**
- * Contact Form
- */
-function initContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-
+// Newsletter Form
+function initNewsletter() {
+    const form = document.getElementById('newsletterForm');
+    
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-
-        // Get form data
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData);
-
-        // Validate
-        if (!data.name || !data.email || !data.subject || !data.message) {
-            showNotification('Please fill in all fields', 'error');
-            return;
-        }
-
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
+        
+        const email = this.querySelector('input[type="email"]').value;
+        const button = this.querySelector('button');
+        
+        // Validate email
+        if (!email || !email.includes('@')) {
             showNotification('Please enter a valid email address', 'error');
             return;
         }
-
-        // Simulate form submission
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span>Sending...</span>';
-        submitBtn.disabled = true;
-
+        
+        // Simulate submission
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<span>Subscribing...</span>';
+        button.disabled = true;
+        
         setTimeout(() => {
-            // Show success
-            form.innerHTML = `
-                <div class="form-success">
-                    <div class="form-success-icon">✓</div>
-                    <h3>Message Sent!</h3>
-                    <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
-                </div>
-            `;
-            showNotification('Message sent successfully!', 'success');
+            button.innerHTML = '<span>✓ Subscribed!</span>';
+            this.querySelector('input').value = '';
+            
+            showNotification('Thanks for subscribing! You\'ll receive updates soon.', 'success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 3000);
         }, 1500);
     });
 }
 
-/**
- * Smooth Scroll
- */
-function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+// Footer Category Links
+function initFooterLinks() {
+    const links = document.querySelectorAll('.footer-links a[data-category]');
+    
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                const headerOffset = 80;
-                const elementPosition = target.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
+            const category = this.dataset.category;
+            
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+            
+            currentCategory = category;
+            renderTools();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 }
 
-/**
- * Notification System
- */
+// Notification System
 function showNotification(message, type = 'info') {
-    // Remove existing notification
+    // Remove existing
     const existing = document.querySelector('.notification');
     if (existing) existing.remove();
-
+    
     // Create notification
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -249,17 +341,17 @@ function showNotification(message, type = 'info') {
         <span>${message}</span>
         <button onclick="this.parentElement.remove()">×</button>
     `;
-
+    
     // Styles
     notification.style.cssText = `
         position: fixed;
         bottom: 24px;
         right: 24px;
         padding: 16px 24px;
-        background: ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#667eea'};
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#6366f1'};
         color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         display: flex;
         align-items: center;
         gap: 12px;
@@ -267,25 +359,27 @@ function showNotification(message, type = 'info') {
         font-weight: 500;
         z-index: 10000;
         animation: slideIn 0.3s ease;
+        max-width: 400px;
     `;
-
+    
     const closeBtn = notification.querySelector('button');
     closeBtn.style.cssText = `
         background: rgba(255,255,255,0.2);
         border: none;
         color: white;
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         cursor: pointer;
         font-size: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: background 0.2s;
     `;
-
+    
     document.body.appendChild(notification);
-
+    
     // Auto remove
     setTimeout(() => {
         if (notification.parentElement) {
@@ -308,172 +402,3 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-
-/**
- * Wishlist Button Toggle
- */
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('btn-wishlist')) {
-        e.target.classList.toggle('active');
-        if (e.target.classList.contains('active')) {
-            e.target.textContent = '♥';
-            e.target.style.color = '#e74c3c';
-            showNotification('Added to wishlist!', 'success');
-        } else {
-            e.target.textContent = '♡';
-            e.target.style.color = '';
-        }
-    }
-});
-
-/**
- * Game Card Hover Effect with Parallax
- */
-document.querySelectorAll('.game-card').forEach(card => {
-    card.addEventListener('mousemove', function(e) {
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
-        
-        this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
-    });
-
-    card.addEventListener('mouseleave', function() {
-        this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
-    });
-});
-
-/**
- * Team Member Social Links Animation
- */
-document.querySelectorAll('.team-member').forEach(member => {
-    member.addEventListener('mouseenter', function() {
-        const social = this.querySelector('.member-social');
-        if (social) {
-            social.style.opacity = '1';
-            social.style.transform = 'translateY(0)';
-        }
-    });
-
-    member.addEventListener('mouseleave', function() {
-        const social = this.querySelector('.member-social');
-        if (social) {
-            social.style.opacity = '0';
-            social.style.transform = 'translateY(10px)';
-        }
-    });
-});
-
-/**
- * Stats Counter Animation
- */
-function animateCounters() {
-    const counters = document.querySelectorAll('.stat-number');
-    
-    counters.forEach(counter => {
-        const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
-        const suffix = counter.textContent.replace(/[0-9]/g, '');
-        const duration = 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-        
-        const updateCounter = () => {
-            current += step;
-            if (current < target) {
-                counter.textContent = Math.floor(current).toLocaleString() + suffix;
-                requestAnimationFrame(updateCounter);
-            } else {
-                counter.textContent = target.toLocaleString() + suffix;
-            }
-        };
-        
-        // Start animation when in view
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                updateCounter();
-                observer.disconnect();
-            }
-        }, { threshold: 0.5 });
-        
-        observer.observe(counter);
-    });
-}
-
-// Initialize counter animation when DOM is ready
-animateCounters();
-
-/**
- * Lazy Load Images
- */
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                }
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-/**
- * Back to Top Button
- */
-const backToTopBtn = document.createElement('button');
-backToTopBtn.innerHTML = '↑';
-backToTopBtn.className = 'back-to-top';
-backToTopBtn.style.cssText = `
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
-    width: 48px;
-    height: 48px;
-    background: var(--gradient-primary);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 999;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-`;
-
-document.body.appendChild(backToTopBtn);
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 500) {
-        backToTopBtn.style.opacity = '1';
-        backToTopBtn.style.visibility = 'visible';
-    } else {
-        backToTopBtn.style.opacity = '0';
-        backToTopBtn.style.visibility = 'hidden';
-    }
-});
-
-backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-/**
- * Preloader
- */
-window.addEventListener('load', function() {
-    document.body.classList.add('loaded');
-});
