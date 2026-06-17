@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纪念碑谷风格 - 极简解谜</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 主菜单 -->
+        <div id="menu-screen" class="screen active">
+            <div class="menu-content">
+                <h1 class="game-title">遗忘的轮廓</h1>
+                <p class="game-subtitle">Monument Valley Style Puzzle</p>
+                <button id="btn-start" class="menu-btn">开始旅程</button>
+                <button id="btn-levels" class="menu-btn">选择关卡</button>
+            </div>
+            <div class="decorative-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+
+        <!-- 关卡选择 -->
+        <div id="level-select" class="screen">
+            <div class="level-header">
+                <button id="btn-back-menu" class="back-btn">← 返回</button>
+                <h2>选择关卡</h2>
+            </div>
+            <div id="level-grid" class="level-grid"></div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <button id="btn-back-levels" class="back-btn">←</button>
+                <span id="level-title" class="level-title">关卡 1</span>
+                <button id="btn-retry" class="icon-btn">↻</button>
+                <button id="btn-hint" class="icon-btn">?</button>
+            </div>
+            <div id="game-canvas" class="game-canvas">
+                <!-- 游戏元素将通过JS动态生成 -->
+            </div>
+            <div id="hint-overlay" class="hint-overlay hidden">
+                <div class="hint-content">
+                    <p id="hint-text">点击地面使小公主移动到目标位置</p>
+                    <button id="btn-close-hint">知道了</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通关界面 -->
+        <div id="win-screen" class="screen">
+            <div class="win-content">
+                <div class="win-particles"></div>
+                <h2 class="win-title">完美通关</h2>
+                <p id="win-level-name" class="win-subtitle">关卡 1</p>
+                <button id="btn-next-level" class="menu-btn">下一关</button>
+                <button id="btn-back-to-levels" class="menu-btn secondary">返回关卡</button>
+            </div>
+        </div>
+
+        <!-- 提示音开关 -->
+        <div id="sound-toggle" class="sound-toggle">
+            <span id="sound-icon">♪</span>
+        </div>
+    </div>
+
+    <script src="engine.js"></script>
+    <script src="levels.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
